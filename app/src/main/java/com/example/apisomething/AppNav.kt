@@ -6,6 +6,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.apisomething.ui.screens.LoginScreen
+import com.example.apisomething.ui.screens.RegisterScreen
+import com.example.apisomething.vm.AuthViewModel
 
 object Routes{
     const val LOGIN = "login"
@@ -16,7 +18,7 @@ object Routes{
 
 @Composable
 fun AppNav(
-
+    authVm : AuthViewModel
 )
 {
     val nav = rememberNavController()
@@ -28,7 +30,29 @@ fun AppNav(
     {
      composable(Routes.LOGIN)
      {
-         LoginScreen()
+         LoginScreen(
+             vm = authVm,
+             onLoginSucces = {
+                 nav.navigate(Routes.USERS){
+                     popUpTo(Routes.LOGIN){inclusive = true}
+                 }
+             },
+             onGoRegister = {
+                 nav.navigate(Routes.REGISTER)
+             }
+         )
      }
+        composable(Routes.REGISTER)
+        {
+            RegisterScreen(
+                vm = authVm,
+                onRegisterSuccess = {
+                    nav.popBackStack()
+                },
+                onBack = {
+                    nav.popBackStack()
+                }
+            )
+        }
     }
 }

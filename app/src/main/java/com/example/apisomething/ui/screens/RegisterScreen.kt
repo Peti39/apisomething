@@ -18,67 +18,57 @@ import androidx.compose.ui.unit.dp
 import com.example.apisomething.ui.UiState
 import com.example.apisomething.vm.AuthViewModel
 
-
 @Composable
-fun LoginScreen(
+fun RegisterScreen(
     vm: AuthViewModel,
-    onLoginSucces: ()-> Unit,
-    onGoRegister: ()-> Unit
-    //TODO: view
+    onRegisterSuccess: () -> Unit,
+    onBack: () -> Unit
 ){
+    val name = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
+    val birthdate = remember { mutableStateOf("") }
 
-    val state = vm.loginState.collectAsState().value
+    val state = vm.registerState.collectAsState().value
 
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
-
     ) {
-        Text("Bejelentkezés")
+        Text("Regisztráció")
 
-        OutlinedTextField(
-            value = email.value,
-            onValueChange = {
-                email.value = it
-            },
-            label = {Text("Email")},
-            singleLine = true
-        )
-
-        OutlinedTextField(
-            value = password.value,
-            onValueChange = {
-                password.value = it
-            },
-            label = {Text("Password")},
-            singleLine = true
-        )
-
+        OutlinedTextField(value = name.value, onValueChange = {
+            name.value = it
+            //Error
+        }, label = {Text("Név")})
+        OutlinedTextField(value = email.value, onValueChange = {
+            email.value = it
+            //Error
+        }, label = {Text("Email")})
+        OutlinedTextField(value = password.value, onValueChange = {
+            password.value = it
+            //Error
+        }, label = {Text("Jelszó")})
+        OutlinedTextField(value = birthdate.value, onValueChange = {
+            birthdate.value = it
+            //Error
+        }, label = {Text("Születési idő")})
 
         when(state){
             UiState.Loading -> CircularProgressIndicator()
-            is UiState.Error -> Text("Hiba ${state.message}")
+            is UiState.Error -> Text("Hibe ${state.message}")
             else -> Unit
         }
 
-
-
         Button(
             onClick = {
-                vm.login(email.value,password.value,onLoginSucces)
+                vm.register(name.value,email.value,password.value,birthdate.value, onRegisterSuccess)
             }
-        ) {
-            Text("Belépés")
+        ) { Text("Regisztáció")}
 
-        }
-        OutlinedButton(
-            onClick = onGoRegister
-        ) {
-            Text("Regisztráció")
-        }
+        OutlinedButton(onClick = onBack) { Text("Vissza") }
+
+
 
     }
 }
-
